@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Storage Unlimited | Ahmad Arafiq</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: radial-gradient(circle at 10% 20%, #0f172a 0%, #020617 100%);
+      color: #f1f5f9;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0f172a; border-radius: 20px; }
+    ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 20px; }
+
+    .hidden { display: none !important; }
+
+    /* LOCK SCREEN - MOBILE FIRST */
+    #lockScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.98);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+    .lock-box {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 48px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .lock-box h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #94a3f8, #60a5fa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 28px;
+    }
+    .password-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .password-wrapper input {
+      width: 100%;
+      padding: 16px 50px 16px 20px;
+      border: 1.5px solid #1e293b;
+      border-radius: 60px;
+      background: #0f172a;
+      color: white;
+      font-size: 1rem;
+    }
+    .password-wrapper input:focus {
+      border-color: #3b82f6;
+      outline: none;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.3rem;
+      background: none;
+      border: none;
+      padding: 0;
+      color: #94a3b8;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lock-btn {
+      background: linear-gradient(95deg, #2563eb, #4f46e5);
+      width: 100%;
+      padding: 14px;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      border: none;
+      font-size: 1rem;
+    }
+
+    /* HEADER - MOBILE RESPONSIVE */
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 16px;
+      border-radius: 32px;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+    }
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, #2563eb, #8b5cf6);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+    .logo h1 {
+      font-size: 1.4rem;
+      background: linear-gradient(to right, #fff, #94a3f8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .logo span {
+      font-size: 0.65rem;
+      color: #60a5fa;
+      display: block;
+    }
+    .user-info {
+      background: #1e293b;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      justify-content: center;
+    }
+    .search-bar input {
+      padding: 12px 18px;
+      border-radius: 60px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: white;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .header-bottom {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    /* STORAGE CARD */
+    .storage-card {
+      background: rgba(17, 24, 39, 0.8);
+      border-radius: 28px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .storage-info {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .storage-unlimited {
+      font-size: 1rem;
+      color: #94a3b8;
+    }
+    .storage-bar-container {
+      width: 100%;
+      background: #1e293b;
+      border-radius: 20px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .storage-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #a855f7);
+      border-radius: 20px;
+    }
+    .storage-stats {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    /* TOOLBAR - MOBILE SCROLLABLE */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      justify-content: space-between;
+    }
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-btn, .sort-btn, .view-toggle, .activity-btn {
+      background: #1e293b;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 40px;
+      cursor: pointer;
+      color: #cbd5e1;
+      transition: 0.2s;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .filter-btn.active, .sort-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+    .activity-btn {
+      background: #7c3aed;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .right-toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* UPLOAD AREA */
+    .upload-area {
+      background: rgba(17, 24, 39, 0.7);
+      border: 2px dashed #3b82f6;
+      border-radius: 32px;
+      padding: 24px 16px;
+      text-align: center;
+      margin-bottom: 24px;
+      transition: 0.2s;
+    }
+    .upload-area h2 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+    .upload-area button {
+      background: #2563eb;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .upload-area.drag { border-color: #a855f7; background: #1e293b; }
+    .progress { width: 100%; margin: 16px auto 0; height: 6px; background: #1e293b; border-radius: 10px; overflow: hidden; }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #c084fc); transition: width 0.2s; }
+
+    /* FILE GRID & LIST - MOBILE OPTIMIZED */
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .file-grid.list-view {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .file-grid.list-view .file-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      flex-wrap: wrap;
+    }
+    .file-grid.list-view .preview { 
+      width: 60px; 
+      height: 60px; 
+      margin: 0; 
+      object-fit: cover;
+    }
+    .file-grid.list-view .file-details { flex: 1; }
+    .file-grid.list-view .card-buttons { margin-top: 0; }
+
+    .file-card {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 14px;
+      border: 1px solid rgba(59,130,246,0.3);
+      transition: 0.2s;
+    }
+    .file-card:active { transform: scale(0.98); }
+    .preview {
+      width: 100%;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      background: #0f172a;
+    }
+    .file-name {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      word-break: break-word;
+    }
+    .file-size {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #334155;
+    }
+    .card-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    button {
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+      border-radius: 40px;
+      padding: 8px 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    .download-btn { background: #2b6e3c; color: white; }
+    .fav-btn { background: #eab308; color: #1e1b2b; }
+    .rename-btn { background: #7c3aed; color: white; }
+    .share-btn { background: #0891b2; color: white; }
+    .delete-btn { background: #dc2626; color: white; }
+
+    /* MODAL & CONTEXT MENU - MOBILE */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #111827;
+      border-radius: 32px;
+      padding: 24px;
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid #3b82f6;
+    }
+    .context-menu {
+      position: fixed;
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 8px 0;
+      z-index: 3000;
+      box-shadow: 0 10px 25px -5px black;
+      min-width: 170px;
+    }
+    .context-menu div {
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: 0.1s;
+      font-size: 0.9rem;
+    }
+    .context-menu div:active { background: #3b82f6; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #1e293b;
+      border-left: 5px solid #22c55e;
+      padding: 14px 20px;
+      border-radius: 60px;
+      z-index: 3000;
+      animation: slideIn 0.3s;
+      text-align: center;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    @keyframes slideIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .history-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #0f172a;
+      border-radius: 28px;
+      padding: 20px 16px;
+      width: calc(100% - 32px);
+      max-width: 650px;
+      max-height: 85vh;
+      overflow-y: auto;
+      z-index: 2500;
+      border: 1px solid #3b82f6;
+    }
+    .history-popup h3 {
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+      padding: 0 8px;
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+    .history-table th, .history-table td {
+      padding: 10px 6px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+      word-break: break-word;
+    }
+    .history-table th {
+      background: #1e293b;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .clear-history-btn, .close-history {
+      background: #dc2626;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .close-history {
+      background: #3b82f6;
+    }
+    /* Empty state */
+    .empty-files {
+      text-align: center;
+      padding: 48px 20px;
+      color: #94a3b8;
+      background: rgba(17,24,39,0.5);
+      border-radius: 32px;
+    }
+    @media (min-width: 768px) {
+      body { padding: 24px 32px; }
+      header { flex-direction: row; justify-content: space-between; align-items: center; padding: 12px 24px; }
+      .logo { justify-content: flex-start; }
+      .storage-card { flex-direction: row; justify-content: space-between; align-items: center; }
+      .storage-bar-container { width: 50%; }
+      .storage-stats { text-align: right; }
+      .toast { left: auto; right: 20px; max-width: 400px; }
+      .file-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="lockScreen">
+  <div class="lock-box">
+    <h1>🔐 STORAGE UNLIMITED</h1>
+    <div class="password-wrapper">
+      <input type="password" id="passwordInput" placeholder="Enter master password">
+      <button class="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
+    </div>
+    <button class="lock-btn" onclick="unlockApp()">Unlock Vault</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🗄️</div>
+      <div>
+        <h1>Storage Unlimited <span>by Ahmad Arafiq</span></h1>
+      </div>
+    </div>
+    <div class="header-bottom">
+      <div class="search-bar" style="flex:1"><input type="text" id="globalSearch" placeholder="🔍 Cari file..." onkeyup="loadFiles()"></div>
+      <div class="user-info">👤 Ahmad Arafiq</div>
+    </div>
+  </header>
+
+  <!-- STORAGE USAGE -->
+  <div class="storage-card">
+    <div class="storage-info">
+      <span>📦 Storage</span>
+      <span class="storage-unlimited">Unlimited</span>
+    </div>
+    <div class="storage-bar-container"><div class="storage-fill" id="storageFill"></div></div>
+    <div class="storage-stats"><span id="usedBytes">0 MB</span> / Unlimited</div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" data-filter="image" onclick="setFilter('image')">🖼️ Images</button>
+      <button class="filter-btn" data-filter="video" onclick="setFilter('video')">🎬 Videos</button>
+      <button class="filter-btn" data-filter="favorite" onclick="setFilter('favorite')">⭐ Favorites</button>
+    </div>
+    <div class="right-toolbar">
+      <button class="sort-btn" data-sort="name" onclick="setSort('name')">Name</button>
+      <button class="sort-btn" data-sort="date" onclick="setSort('date')">Date</button>
+      <button class="sort-btn" data-sort="size" onclick="setSort('size')">Size</button>
+      <button class="view-toggle" onclick="toggleView()">📱 Grid/List</button>
+      <button class="activity-btn" onclick="showHistoryPopup()">📋 History</button>
+    </div>
+  </div>
+
+  <!-- UPLOAD AREA -->
+  <div class="upload-area" id="uploadArea">
+    <h2>⬆️ Drag & Drop / Choose Files</h2>
+    <input type="file" id="fileInput" multiple hidden>
+    <button onclick="document.getElementById('fileInput').click()">📂 Pilih File</button>
+    <div class="progress"><div class="progress-bar" id="globalProgress"></div></div>
+  </div>
+
+  <!-- FILE LIST -->
+  <div class="file-grid" id="fileList"></div>
+</div>
+
+<script>
+  const API = "http://127.0.0.1:8090";
+  const APP_PASSWORD = "Amirah27102009";
+  const STORAGE_KEY = "storage_unlimited_unlocked";
+  
+  let currentFilter = "all";
+  let currentSort = "date";
+  let isListView = false;
+  let allFilesCache = [];
+  let activityHistory = [];
+
+  function loadHistoryFromStorage() {
+    const saved = localStorage.getItem("storage_history");
+    if (saved) {
+      try {
+        activityHistory = JSON.parse(saved);
+      } catch(e) { activityHistory = []; }
+    }
+  }
+
+  function saveHistoryToStorage() {
+    localStorage.setItem("storage_history", JSON.stringify(activityHistory));
+  }
+
+  function addHistory(action, fileName, fileSize = "") {
+    const time = new Date().toLocaleString('id-ID');
+    activityHistory.unshift({ time, action, fileName, fileSize });
+    if (activityHistory.length > 100) activityHistory.pop();
+    saveHistoryToStorage();
+  }
+
+  function clearAllHistory() {
+    if (confirm("Hapus semua history aktivitas?")) {
+      activityHistory = [];
+      saveHistoryToStorage();
+      showToast("✅ History berhasil dihapus");
+      const modal = document.querySelector(".modal");
+      if (modal) modal.remove();
+      showHistoryPopup();
+    }
+  }
+
+  function showToast(msg, isError = false) {
+    let toast = document.createElement("div");
+    toast.className = "toast";
+    toast.style.borderLeftColor = isError ? "#dc2626" : "#22c55e";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }
+
+  function togglePasswordVisibility() {
+    const input = document.getElementById("passwordInput");
+    const btn = document.querySelector(".toggle-password");
+    if (input.type === "password") {
+      input.type = "text";
+      btn.textContent = "🙈";
+    } else {
+      input.type = "password";
+      btn.textContent = "👁️";
+    }
+  }
+
+  function showHistoryPopup() {
+    const oldModal = document.querySelector(".modal");
+    if (oldModal) oldModal.remove();
+    
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    
+    let tableRows = "";
+    if (activityHistory.length === 0) {
+      tableRows = `<tr><td colspan="4" style="text-align:center; padding:32px;">📭 Belum ada aktivitas</td></tr>`;
+    } else {
+      activityHistory.forEach(h => {
+        tableRows += `
+          <tr>
+            <td>${h.time}</td>
+            <td><strong>${escapeHtml(h.action)}</strong></td>
+            <td>${escapeHtml(h.fileName)}</td>
+            <td>${h.fileSize || "-"}</td>
+          </tr>
+        `;
+      });
+    }
+    
+    const historyHtml = `
+      <div class="history-popup">
+        <h3>📋 Activity History</h3>
+        <div style="overflow-x: auto;">
+          <table class="history-table">
+            <thead>
+              <tr><th>Time</th><th>Action</th><th>File Name</th><th>Size</th></tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:12px; margin-top:20px;">
+          <button class="clear-history-btn" onclick="clearAllHistory()">🗑️ Clear</button>
+          <button class="close-history" onclick="this.closest('.modal').remove()">Close</button>
+        </div>
+      </div>
+    `;
+    modal.innerHTML = historyHtml;
+    document.body.appendChild(modal);
+    modal.addEventListener("click", (e) => { if(e.target === modal) modal.remove(); });
+  }
+
+  function checkUnlockStatus() {
+    const isUnlocked = localStorage.getItem(STORAGE_KEY);
+    if (isUnlocked === "true") {
+      document.getElementById("lockScreen").style.display = "none";
+      document.getElementById("app").classList.remove("hidden");
+      loadFiles();
+    }
+  }
+
+  async function ensureUniqueName(customName) {
+    try {
+      const res = await fetch(`${API}/api/collections/files/records`);
+      const data = await res.json();
+      const existing = data.items.filter(i => i.customName === customName);
+      if (existing.length === 0) return customName;
+      let counter = 1;
+      let newName = `${customName} (${counter})`;
+      while (data.items.some(i => i.customName === newName)) {
+        counter++;
+        newName = `${customName} (${counter})`;
+      }
+      return newName;
+    } catch(e) {
+      return customName;
+    }
+  }
+
+  async function uploadFiles(files) {
+    for (let file of files) {
+      let rawName = file.name.split('.').slice(0, -1).join('.') || file.name;
+      let finalName = await ensureUniqueName(rawName);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("name", file.name);
+      formData.append("customName", finalName);
+      formData.append("favorite", false);
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", `${API}/api/collections/files/records`);
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            let percent = (e.loaded / e.total) * 100;
+            document.getElementById("globalProgress").style.width = percent + "%";
+          }
+        };
+        xhr.onload = () => {
+          document.getElementById("globalProgress").style.width = "0%";
+          addHistory("Upload", finalName, formatSize(file.size));
+          loadFiles();
+          showToast(`✅ ${finalName} terupload`);
+        };
+        xhr.onerror = () => {
+          showToast("Upload gagal: PocketBase tidak berjalan?", true);
+        };
+        xhr.send(formData);
+      } catch(e) { showToast("Upload gagal", true); }
+    }
+  }
+
+  document.getElementById("fileInput").addEventListener("change", (e) => {
+    if (e.target.files.length) uploadFiles(Array.from(e.target.files));
+  });
+
+  const uploadArea = document.getElementById("uploadArea");
+  uploadArea.addEventListener("dragover", e => { e.preventDefault(); uploadArea.classList.add("drag"); });
+  uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("drag"));
+  uploadArea.addEventListener("drop", e => {
+    e.preventDefault(); uploadArea.classList.remove("drag");
+    if (e.dataTransfer.files.length) uploadFiles(Array.from(e.dataTransfer.files));
+  });
+
+  function setFilter(type) { 
+    currentFilter = type; 
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.filter-btn[data-filter="${type}"]`)?.classList.add('active');
+    loadFiles(); 
+  }
+  function setSort(type) { 
+    currentSort = type; 
+    loadFiles(); 
+  }
+  function toggleView() { 
+    isListView = !isListView; 
+    const grid = document.getElementById("fileList"); 
+    if (isListView) grid.classList.add("list-view"); 
+    else grid.classList.remove("list-view"); 
+    loadFiles(); 
+  }
+
+  async function toggleFavorite(id, current, fileName) {
+    try {
+      await fetch(`${API}/api/collections/files/records/${id}`,{
+        method:"PATCH",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({favorite:!current})
+      });
+      addHistory("Favorite toggled", fileName, "");
+      loadFiles();
+      showToast("⭐ Favorite updated");
+    } catch(e) { showToast("Error", true); }
+  }
+
+  async function renameFile(id, oldName) {
+    let newName = prompt("Nama baru:", oldName);
+    if(newName && newName.trim()) {
+      try {
+        await fetch(`${API}/api/collections/files/records/${id}`,{
+          method:"PATCH",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({customName:newName.trim()})
+        });
+        addHistory("Rename", `${oldName} → ${newName.trim()}`, "");
+        loadFiles();
+        showToast("Berhasil rename");
+      } catch(e) { showToast("Error", true); }
+    }
+  }
+
+  async function deleteFile(id, fileName, fileSize) {
+    if(confirm(`Hapus "${fileName}"?`)) {
+      try {
+        await fetch(`${API}/api/collections/files/records/${id}`,{method:"DELETE"});
+        addHistory("Delete", fileName, fileSize);
+        loadFiles();
+        showToast("File dihapus");
+      } catch(e) { showToast("Error", true); }
+    }
+  }
+
+  function forceDownload(url, fileName, fileSize) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    addHistory("Download", fileName, fileSize);
+  }
+
+  function openShareModal(fileId, fileName) {
+    const shareUrl = `${window.location.origin}/share/${fileId}`;
+    const modal = document.createElement("div"); 
+    modal.className = "modal";
+    modal.innerHTML = `<div class="modal-content"><h3>🔗 Share: ${escapeHtml(fileName)}</h3><input id="shareLink" value="${shareUrl}" readonly style="width:100%; padding:12px; margin:15px 0; background:#1e293b; border:none; border-radius:16px; color:white;"><button onclick="navigator.clipboard.writeText(document.getElementById('shareLink').value);showToast('Link disalin');">📋 Copy Link</button><button onclick="this.closest('.modal').remove()" style="margin-left:10px;">Tutup</button></div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener("click", (e) => { if(e.target === modal) modal.remove(); });
+  }
+
+  function showContextMenu(e, item) {
+    e.preventDefault();
+    const existing = document.querySelector(".context-menu");
+    if(existing) existing.remove();
+    const menu = document.createElement("div");
+    menu.className = "context-menu";
+    menu.style.left = Math.min(e.pageX, window.innerWidth - 180) + "px";
+    menu.style.top = e.pageY + "px";
+    const fileSizeFormatted = formatSize(item.file?.size || 0);
+    menu.innerHTML = `
+      <div onclick="forceDownload('${API}/api/files/files/${item.id}/${item.file}', '${escapeHtml(item.customName)}', '${fileSizeFormatted}'); this.parentElement.remove();">⬇️ Download</div>
+      <div onclick="openShareModal('${item.id}', '${escapeHtml(item.customName)}'); this.parentElement.remove();">🔗 Share</div>
+      <div onclick="renameFile('${item.id}', '${escapeHtml(item.customName)}'); this.parentElement.remove();">✏️ Rename</div>
+      <div onclick="deleteFile('${item.id}', '${escapeHtml(item.customName)}', '${fileSizeFormatted}'); this.parentElement.remove();">🗑️ Delete</div>
+    `;
+    document.body.appendChild(menu);
+    setTimeout(() => document.addEventListener("click", () => menu.remove(), { once: true }), 10);
+  }
+
+  function getPreviewHtml(url, ext) {
+    if(["jpg","jpeg","png","gif","webp"].includes(ext)) 
+      return `<img src="${url}" class="preview" draggable="false" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20120%22%3E%3Crect%20width%3D%22200%22%20height%3D%22120%22%20fill%3D%22%23111%22%2F%3E%3Ctext%20fill%3D%22%23aaa%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%3Eerror%3C%2Ftext%3E%3C%2Fsvg%3E'">`;
+    if(["mp4","mov","webm","ogg"].includes(ext)) 
+      return `<video class="preview" controls preload="metadata"><source src="${url}"></video>`;
+    return `<div class="preview empty-preview" style="height:120px; display:flex; align-items:center; justify-content:center; background:#111827; border-radius:20px; font-size:2rem;">📄</div>`;
+  }
+
+  function formatSize(bytes) {
+    if(!bytes || bytes === 0) return "0 KB";
+    if(bytes > 1e9) return (bytes/1e9).toFixed(2)+" GB";
+    if(bytes > 1e6) return (bytes/1e6).toFixed(2)+" MB";
+    return (bytes/1024).toFixed(2)+" KB";
+  }
+
+  async function updateStorageQuota() {
+    try {
+      const res = await fetch(`${API}/api/collections/files/records`);
+      const data = await res.json();
+      let total = 0;
+      data.items.forEach(i => { if(i.file?.size) total += i.file.size; });
+      const usedMB = total / (1024*1024);
+      const percent = Math.min((total / (10*1024*1024*1024)) * 100, 100);
+      document.getElementById("storageFill").style.width = `${percent}%`;
+      document.getElementById("usedBytes").innerHTML = `${usedMB.toFixed(2)} MB`;
+    } catch(e) {}
+  }
+
+  async function loadFiles() {
+    try {
+      const res = await fetch(`${API}/api/collections/files/records`);
+      const data = await res.json();
+      allFilesCache = data.items;
+      let searchTerm = document.getElementById("globalSearch").value.toLowerCase();
+      let filtered = allFilesCache.filter(f => f.customName && f.customName.toLowerCase().includes(searchTerm));
+      
+      if(currentFilter === "image") filtered = filtered.filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f.file));
+      else if(currentFilter === "video") filtered = filtered.filter(f => /\.(mp4|mov|webm|ogg)$/i.test(f.file));
+      else if(currentFilter === "favorite") filtered = filtered.filter(f => f.favorite === true);
+      
+      if(currentSort === "name") filtered.sort((a,b)=> (a.customName || "").localeCompare(b.customName || ""));
+      else if(currentSort === "size") filtered.sort((a,b)=> (b.file?.size||0) - (a.file?.size||0));
+      else filtered.sort((a,b)=> new Date(b.created) - new Date(a.created));
+
+      const container = document.getElementById("fileList");
+      container.innerHTML = "";
+      if(filtered.length === 0) {
+        container.innerHTML = '<div class="empty-files">📭 Tidak ada file. Upload file pertama Anda!</div>';
+        return;
+      }
+      for(let item of filtered) {
+        const fileUrl = `${API}/api/files/files/${item.id}/${item.file}`;
+        const ext = (item.file || "").split(".").pop().toLowerCase();
+        const preview = getPreviewHtml(fileUrl, ext);
+        const sizeText = formatSize(item.file?.size || 0);
+        const favStar = item.favorite ? "⭐" : "☆";
+        
+        const card = document.createElement("div");
+        card.className = "file-card";
+        card.innerHTML = `
+          ${preview}
+          <div class="file-name"><span>${favStar}</span> <strong>${escapeHtml(item.customName || item.name)}</strong></div>
+          <div class="file-size">📦 ${sizeText}</div>
+          <div class="card-buttons">
+            <button class="download-btn">⬇️ DL</button>
+            <button class="fav-btn">⭐ Fav</button>
+            <button class="rename-btn">✏️</button>
+            <button class="share-btn">🔗</button>
+            <button class="delete-btn">🗑️</button>
+          </div>
+        `;
+        card.addEventListener("contextmenu", (e) => showContextMenu(e, item));
+        container.appendChild(card);
+        
+        card.querySelector(".download-btn").addEventListener("click", () => forceDownload(fileUrl, item.customName, sizeText));
+        card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(item.id, item.favorite, item.customName));
+        card.querySelector(".rename-btn").addEventListener("click", () => renameFile(item.id, item.customName));
+        card.querySelector(".share-btn").addEventListener("click", () => openShareModal(item.id, item.customName));
+        card.querySelector(".delete-btn").addEventListener("click", () => deleteFile(item.id, item.customName, sizeText));
+      }
+      updateStorageQuota();
+    } catch(e) {
+      console.log("Error load files:", e);
+      document.getElementById("fileList").innerHTML = `<div class="empty-files">⚠️ Gagal terhubung ke PocketBase. Pastikan server berjalan di ${API}</div>`;
+    }
+  }
+
+  function escapeHtml(str) { 
+    if(!str) return '';
+    return str.replace(/[&<>]/g, function(m){ 
+      if(m==='&') return '&amp;'; 
+      if(m==='<') return '&lt;'; 
+      return '&gt;'; 
+    }); 
+  }
+  
+  function unlockApp() {
+    if(document.getElementById("passwordInput").value === APP_PASSWORD) {
+      localStorage.setItem(STORAGE_KEY, "true");
+      document.getElementById("lockScreen").style.display = "none";
+      document.getElementById("app").classList.remove("hidden");
+      loadFiles();
+    } else {
+      alert("Password salah");
+    }
+  }
+
+  // Inisialisasi
+  loadHistoryFromStorage();
+  checkUnlockStatus();
+  
+  window.loadFiles = loadFiles;
+  window.setFilter = setFilter;
+  window.setSort = setSort;
+  window.toggleView = toggleView;
+  window.showHistoryPopup = showHistoryPopup;
+  window.clearAllHistory = clearAllHistory;
+  window.togglePasswordVisibility = togglePasswordVisibility;
+  window.unlockApp = unlockApp;
+  window.forceDownload = forceDownload;
+  window.openShareModal = openShareModal;
+  window.renameFile = renameFile;
+  window.deleteFile = deleteFile;
+  window.showToast = showToast;
+</script>
+</body>
+</html>
